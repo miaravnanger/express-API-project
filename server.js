@@ -1,5 +1,6 @@
 import express from "express";
 import authRoutes from "./routes/auth.routes.js"
+import todosRoutes from "./routes/todos.routes.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -14,5 +15,8 @@ app.get("/v1/health", (req, res) => {
 
 // routes
 app.use("/v1/auth", authRoutes);
+
+app.use("/v1/", todosRoutes);
+
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

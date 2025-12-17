@@ -37,6 +37,10 @@ export function login(credentials) {
 
 
 
-export function logout(sessionId) {}
+export function logout(sessionId) {
+  activeSessions.delete(sessionId);
+}
 
-export function isSessionActive(sessionId) {}
+export function isSessionActive(sessionId) {
+   return activeSessions.has(sessionId);
+}

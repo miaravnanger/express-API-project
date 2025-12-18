@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { generateId } from "../utils/id.js";
 import jwt from "jsonwebtoken";
 
 const activeSessions = new Set();
@@ -17,7 +17,7 @@ export function login(credentials) {
     throw new Error("INVALID_CREDENTIALS");
   }
 
-  const sessionId = uuidv4();
+  const sessionId = generateId();
 
   activeSessions.add(sessionId);
   const payload = {

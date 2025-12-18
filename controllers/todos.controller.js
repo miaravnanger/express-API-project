@@ -1,54 +1,57 @@
 import * as todosService from "../services/todos.service.js";
 
-export function createTodoController(req, res){
-	const {title, dueDate, tags} = req.body;
+export function createTodoController(req, res) {
+  const { title, dueDate, tags } = req.body;
 
-	if (!title) {
-		return res.status(400).json({error: "Title is required"})
-	}
+  if (!title) {
+    return res.status(400).json({ error: "Title is required" });
+  }
 
-    const todo = todosService.createTodo({title, dueDate, tags});
-    return res.status(201).json(todo)
+  const todo = todosService.createTodo({ title, dueDate, tags });
+  return res.status(201).json(todo);
 }
 
+export function getTodosController(req, res) {
+  const { done, sort } = req.query;
 
-export function getTodosController (req, res) {
-	const {done, sort} = req.query;
+  if (sort && !["asc", "desc"].includes(sort)) {
+    return res.status(400).json({
+      error: "Sort must be 'asc' or 'desc",
+    });
+  }
+	
+  const todo = todosService.getTodos({
+    done: done === undefined ? undefined : done === "true",
+    sort,
+  });
 
-    const todo = todosService.getTodos({
-			done: done === undefined ? undefined : done === "true",
-			sort,
-		});
-
-    return res.status(200).json(todo);
+  return res.status(200).json(todo);
 }
 
 export function getTodoByIdController(req, res) {
-	const todo = todosService.getTodoById(req.params.id);
+  const todo = todosService.getTodoById(req.params.id);
 
-	if (!todo) {
-		return res.status(404).json({error: "Todo not found"});
-	}
-	return res.status(200).json(todo);
+  if (!todo) {
+    return res.status(404).json({ error: "Todo not found" });
+  }
+  return res.status(200).json(todo);
 }
 
-
 export function updateTodoController(req, res) {
-	const {done} = req.body;
+  const { done } = req.body;
 
-	if (done === undefined) {
-		return res
-		.status(400)
-		.json({error: "Field `done` must be true or false"});
-	}
+  if (done === undefined) {
+    return res
+      .status(400)
+      .json({ error: "Field `done` must be true or false" });
+  }
 
-	const todo = todosService.updateTodo(req.params.id, {done});
+  const todo = todosService.updateTodo(req.params.id, { done });
 
-	if (!todo) {
-		return res.status(404).json({error: "Todo not found"})
-
-	}
-	return res.status(200).json(todo);
+  if (!todo) {
+    return res.status(404).json({ error: "Todo not found" });
+  }
+  return res.status(200).json(todo);
 }
 
 export function deleteTodoController(req, res) {

@@ -5,10 +5,8 @@ export const validate = (schema) => {
       next();
     } catch (err) {
       return res.status(422).json({
-        error: {
-          message: "Validation failed",
+          error: "Validation failed",
           details: err.errors,
-        },
       });
     }
   };

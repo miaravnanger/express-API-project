@@ -1,10 +1,12 @@
-import {v4 as uuidv4} from "uuid";
+import {generateId} from "../utils/id.js"
 
-const todos = [];
+import {
+    getAllTodos, addTodo, findTodoById, removeTodoById} from "../data/todos.store.js"
+
 
 export function createTodo({title, dueDate, tags}) {
     const todo = {
-      id: uuidv4(),
+      id: generateId(),
       title,
       dueDate: dueDate || null,
       tags: tags || [],
@@ -12,12 +14,12 @@ export function createTodo({title, dueDate, tags}) {
       createdAt: Date.now(),
     };
 
-    todos.push(todo);
+    addTodo(todo);
     return todo;
 }
 
 export function getTodos({done, sort}) {
-    let result = [...todos];
+    let result = [...getAllTodos()];
 
     if (done !== undefined) {
         result = result.filter(t => t.done === done);
@@ -35,11 +37,11 @@ export function getTodos({done, sort}) {
 }
 
 export function getTodoById(id) {
-    return todos.find(t => t.id === id);
+    return findTodoById(id);
 }
 
 export function updateTodo(id, updates) {
-    const todo = getTodoById(id);
+    const todo = findTodoById(id);
     if(!todo) return null;
 
     if (updates.done !== undefined) {
@@ -50,9 +52,5 @@ export function updateTodo(id, updates) {
 }
 
 export function deleteTodo(id){
-    const index = todos.findIndex(t => t.id === id);
-    if (index === -1) return false;
-
-    todos.splice(index, 1);
-    return true;
+  return removeTodoById(id);
 }

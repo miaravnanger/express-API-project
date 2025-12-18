@@ -12,20 +12,32 @@ export function createTodoController(req, res) {
 }
 
 export function getTodosController(req, res) {
-  const { done, sort } = req.query;
+  const { done, sort = "desc", limit } = req.query;
 
   if (sort && !["asc", "desc"].includes(sort)) {
     return res.status(400).json({
       error: "Sort must be 'asc' or 'desc",
     });
+
   }
-	
-  const todo = todosService.getTodos({
+
+
+	const parsedLimit =
+	limit === undefined ? undefined : Number(limit);
+
+  if (parsedLimit !== undefined && (isNaN(parsedLimit) || parsedLimit < 1)) {
+    return res.status(400).json({
+      error: "Limit must be a positive number",
+    });
+  }
+
+  const todos = todosService.getTodos({
     done: done === undefined ? undefined : done === "true",
     sort,
+		limit: parsedLimit,
   });
 
-  return res.status(200).json(todo);
+  return res.status(200).json(todos);
 }
 
 export function getTodoByIdController(req, res) {

@@ -21,6 +21,9 @@ export function createTodo({ title, dueDate, tags }) {
   return todo;
 }
 
+// Returns todos with optional filtering, sorting and limiting.
+// Business logic is kept in the service layer, not in the controller.
+
 export function getTodos({ done, sort, limit }) {
   let result = [...getAllTodos()];
 

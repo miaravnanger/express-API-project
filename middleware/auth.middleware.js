@@ -1,8 +1,12 @@
+// Middleware that protects routes by:
+// 1. Verifying the JWT access token
+// 2. Checking that the session ID (sid) is still active
+// 3. Attaching the decoded user payload to req.user
+
 import jwt from "jsonwebtoken";
 import { isSessionActive } from "../services/auth.service.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
-
 
 export function requireAuth(req, res, next) {
   const authHeader = req.get("authorization");
@@ -19,10 +23,10 @@ export function requireAuth(req, res, next) {
   }
 
   const token = parts[1];
-	let payload;
+  let payload;
 
   try {
-		payload = jwt.verify(token, JWT_SECRET);
+    payload = jwt.verify(token, JWT_SECRET);
     const { sid } = payload;
     if (!isSessionActive(sid)) {
       return res.status(401).json({ error: "Session expired" });

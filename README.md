@@ -68,23 +68,57 @@ The project uses the following variables:
 
 ## API Endpoints
 
-## Authentication
+### Authentication
 
 ### POST /v1/auth/login
 
 Logs in a user and returns access and refresh tokens.
 
+**Headers:**
+- `Content-Type: application/json`
+**Request body:**
+```json
+{
+  "username": "admin",
+  "password": "Password1"
+}
+```
+
+### Demo credentials
+
+This API uses a hardcoded user for demonstration and testing purposes.
+
+**Username:** `admin`  
+**Password:** `Password1`
+
+These credentials must be used when calling the login endpoint.
+
+
 ### POST /v1/auth/logout
 
 Logs out the user and invalidates the current session.
+
+**Headers:**
+- `Authorization: Bearer <accessToken>`
+
 
 ### POST /v1/auth/refresh
 
 Returns a new access token using a valid refresh token.
 
+**Headers:**
+- `x-refresh-token: <refreshToken>`
+
+
 ---
 
 ## Todos (protected)
+
+For all todo endpoints:
+
+**Headers (required):**
+- `Authorization: Bearer <accessToken>`
+
 
 ### GET /v1/todos
 
@@ -96,9 +130,29 @@ Returns all todos. Supports filtering, sorting and limiting.
 - `sort=asc | desc`
 - `limit=number`
 
-### POST /v1/todos
 
+### POST /v1/todos
 Creates a new todo.
+
+**Request body:**
+```json
+{
+  "title": "Buy groceries",
+  "dueDate": "2025-01-15",
+  "tags": ["shopping", "personal"]
+}
+```
+**Response(201 Created):**
+```json
+{
+  "id": "c1a9e3c4-8a6f-4b1e-9f2b-1d4c6a7b8e90",
+  "title": "Buy groceries",
+  "dueDate": "2025-01-15",
+  "tags": ["shopping", "personal"],
+  "done": false,
+  "createdAt": 1736947200000
+}
+```
 
 ### GET /v1/todos/:id
 
@@ -107,6 +161,13 @@ Returns a single todo by id.
 ### PATCH /v1/todos/:id
 
 Updates the done status of a todo.
+
+**Request body:**
+```json
+{
+  "done": true
+}
+```
 
 ### DELETE /v1/todos/:id
 

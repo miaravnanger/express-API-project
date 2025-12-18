@@ -4,31 +4,31 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 
 export function refreshController(req, res) {
+  // Issues a new access token using a valid refresh token.
+  // The refresh token must be valid AND belong to an active session.
+
   const refreshToken = req.get("x-refresh-token");
 
   if (!refreshToken) {
-    return res.status(400).json({error: "Missing refresh token"});
+    return res.status(400).json({ error: "Missing refresh token" });
   }
 
   try {
     const payload = jwt.verify(refreshToken, JWT_SECRET);
-    const {sid, username, sub} = payload;
+    const { sid, username, sub } = payload;
 
     if (!authService.isSessionActive(sid)) {
-      return res.status(401).json({error: "Session expired"})
+      return res.status(401).json({ error: "Session expired" });
     }
 
-    const newAccessToken = jwt.sign(
-      {sub, username, sid},
-      JWT_SECRET,
-      {expiresIn:"15m"}
-    );
+    const newAccessToken = jwt.sign({ sub, username, sid }, JWT_SECRET, {
+      expiresIn: "15m",
+    });
 
-    return res.status(200).json({accessToken: newAccessToken});
-
-} catch (err) {
-  return res.status(401).json({error: "Invalid refresh token"});
-}
+    return res.status(200).json({ accessToken: newAccessToken });
+  } catch (err) {
+    return res.status(401).json({ error: "Invalid refresh token" });
+  }
 }
 
 

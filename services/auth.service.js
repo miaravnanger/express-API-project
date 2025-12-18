@@ -33,8 +33,29 @@ export function login(credentials) {
   return {accessToken, refreshToken};
 }
 
+export function refreshAcessToken(refreshToken) {
+  let payload;
 
+  try {
+    payload = jwt.verify(refreshToken, JWT_SECRET);
+  } catch {
+    throw new Error("INVALID_REFRESH_TOKEN");
+  }
 
+  const {sid} = payload;
+  if (!activeSessions.has(sid)){
+    throw new Error("SESSION_EXPIRED");
+  }
+
+  const newAccessToken = jwt.sign( {
+    sub: payload.sub,
+    username: payload.username,
+    sid,
+  },
+JWT_SECRET, {expiresIn: "15m"}
+);
+return newAccessToken;
+}
 
 
 export function logout(sessionId) {

@@ -32,12 +32,14 @@ export function getTodoByIdController(req, res) {
 	return res.status(200).json(todo);
 }
 
+
 export function updateTodoController(req, res) {
 	const {done} = req.body;
-	if (typeof done !== "boolean") {
+
+	if (done === undefined) {
 		return res
 		.status(400)
-		.json({error: "Field 'done' must be true or false"});
+		.json({error: "Field `done` must be true or false"});
 	}
 
 	const todo = todosService.updateTodo(req.params.id, {done});
